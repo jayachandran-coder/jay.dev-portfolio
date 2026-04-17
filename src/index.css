@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-100: #e0e7ff;
+  --color-brand-500: #6366f1;
+  --color-brand-900: #312e81;
+  
+  --color-dark-900: #0f172a;
+  --color-dark-800: #1e293b;
+  --color-dark-700: #334155;
+  
+  --color-light-100: #ffffff;
+  --color-light-200: #f8fafc;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  
+  body {
+    @apply bg-light-100 text-slate-900 dark:bg-dark-900 dark:text-slate-100 antialiased overflow-x-hidden;
+  }
+}
+
+.glass-panel {
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 dark:bg-black/20 dark:border-white/10 shadow-xl;
+}
+
+.glow-effect {
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.25) 0%, transparent 60%);
+  z-index: -1;
+  pointer-events: none;
+}
