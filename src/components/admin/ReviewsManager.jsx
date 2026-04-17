@@ -15,14 +15,14 @@ export default function ReviewsManager() {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/reviews`);
       setReviews(res.data);
     } catch (err) { console.error('Failed to fetch reviews'); }
   };
 
   const handleApprove = async (id) => {
     try {
-      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews/${id}/approve`, {}, authConfig);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/reviews/${id}/approve`, {}, authConfig);
       setMessage('Review approved successfully!');
       setTimeout(() => setMessage(''), 3000);
       fetchReviews();
@@ -35,7 +35,7 @@ export default function ReviewsManager() {
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this review?')) {
       try {
-        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews/${id}`, authConfig);
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/reviews/${id}`, authConfig);
         setMessage('Review deleted.');
         setTimeout(() => setMessage(''), 3000);
         fetchReviews();

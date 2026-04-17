@@ -19,7 +19,7 @@ export default function ProjectsManager() {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects`);
       setProjects(res.data);
     } catch (err) { console.error('Failed to fetch projects'); }
   };
@@ -52,10 +52,10 @@ export default function ProjectsManager() {
 
     try {
       if (editingId) {
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${editingId}`, uploadData, authConfig);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/projects/${editingId}`, uploadData, authConfig);
         setMessage('Project updated successfully!');
       } else {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`, uploadData, authConfig);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/projects`, uploadData, authConfig);
         setMessage('Project created successfully!');
       }
       
@@ -81,7 +81,7 @@ export default function ProjectsManager() {
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this project?')) {
       try {
-        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${id}`, authConfig);
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/projects/${id}`, authConfig);
         setMessage('Project deleted.');
         setTimeout(() => setMessage(''), 3000);
         fetchProjects();

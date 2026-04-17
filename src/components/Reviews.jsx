@@ -19,7 +19,7 @@ export default function Reviews() {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews?approved=true`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/reviews?approved=true`);
       setReviews(res.data);
     } catch (err) { console.error(err); }
   }
@@ -45,7 +45,7 @@ export default function Reviews() {
         payload.append('image', formData.image);
       }
 
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews`, payload, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/reviews`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setSubmitMessage('Thank you! Your review has been submitted and is pending approval.');

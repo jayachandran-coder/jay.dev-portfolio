@@ -11,7 +11,7 @@ export default function AdminLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, { username, password });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { username, password });
       localStorage.setItem('adminToken', res.data.token);
       navigate('/admin');
     } catch (err) {

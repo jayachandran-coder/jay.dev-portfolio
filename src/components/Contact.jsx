@@ -16,7 +16,7 @@ export default function Contact() {
 
     setLoading(true);
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/contact`, form);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/contact`, form);
       setSubmitted(true);
       setForm({ name: '', email: '', message: '' });
       setTimeout(() => setSubmitted(false), 6000);
