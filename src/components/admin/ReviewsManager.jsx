@@ -9,16 +9,28 @@ export default function ReviewsManager() {
   const token = localStorage.getItem('adminToken');
   const authConfig = { headers: { Authorization: `Bearer ${token}` } };
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
   const fetchReviews = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/reviews`);
       setReviews(res.data);
-    } catch (err) { console.error('Failed to fetch reviews'); }
+    } catch {
+      console.error('Failed to fetch reviews');
+    }
   };
+
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/reviews`);
+        if (active) setReviews(res.data);
+      } catch {
+        console.error('Failed to fetch reviews');
+      }
+    };
+    load();
+    return () => { active = false; };
+  }, []);
 
   const handleApprove = async (id) => {
     try {
@@ -26,7 +38,7 @@ export default function ReviewsManager() {
       setMessage('Review approved successfully!');
       setTimeout(() => setMessage(''), 3000);
       fetchReviews();
-    } catch (err) { 
+    } catch { 
       setMessage('Error approving review.');
       setTimeout(() => setMessage(''), 3000);
     }
@@ -39,7 +51,7 @@ export default function ReviewsManager() {
         setMessage('Review deleted.');
         setTimeout(() => setMessage(''), 3000);
         fetchReviews();
-      } catch (err) { 
+      } catch { 
         setMessage('Error deleting review.');
         setTimeout(() => setMessage(''), 3000);
       }

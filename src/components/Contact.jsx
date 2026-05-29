@@ -95,7 +95,7 @@ export default function Contact() {
                transition={{ delay: 0.6 }}
                className="mt-12"
             >
-              <a href="https://wa.me/917339361301" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-[#25D366] hover:bg-[#1ebd5a] text-white rounded-full font-bold shadow-lg shadow-[#25D366]/20 transition-all hover:-translate-y-1">
+              <a href="https://wa.me/917339361301" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-[#25D366] hover:bg-[#1ebd5a] text-white rounded-full font-bold shadow-lg shadow-[#25D366]/20 transition-all hover:-translate-y-1">
                 <MessageCircle size={22} fill="currentColor" />
                 <span>Chat on WhatsApp</span>
               </a>

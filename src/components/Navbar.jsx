@@ -100,6 +100,7 @@ export default function Navbar() {
         <button
           className="md:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-800 dark:text-slate-200 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle Navigation Menu"
         >
           {isOpen ? <X size={26} /> : <Menu size={26} />}
         </button>

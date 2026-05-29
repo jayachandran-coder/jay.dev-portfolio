@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { 
-  FaReact, FaNodeJs, FaPython, FaDocker, FaGitAlt, 
+  FaReact, FaNodeJs, FaPython, FaGitAlt, 
   FaFigma, FaHtml5, FaCss3Alt, FaJs 
 } from 'react-icons/fa';
-import { SiTailwindcss, SiTypescript, SiNextdotjs, SiMongodb } from 'react-icons/si';
+import { SiTailwindcss, SiTypescript, SiNextdotjs, SiMongodb, SiPostgresql } from 'react-icons/si';
 
 const skills = [
   { name: 'React', icon: FaReact, color: 'text-sky-400' },
@@ -18,7 +18,7 @@ const skills = [
   { name: 'HTML', icon: FaHtml5, color: 'text-orange-500' },
   { name: 'CSS', icon: FaCss3Alt, color: 'text-blue-500' },
   { name: 'Figma', icon: FaFigma, color: 'text-purple-500' },
-  { name: 'PostgreSQL', icon: SiMongodb, color: 'text-blue-500' },
+  { name: 'PostgreSQL', icon: SiPostgresql, color: 'text-blue-500' },
 
 ];
 

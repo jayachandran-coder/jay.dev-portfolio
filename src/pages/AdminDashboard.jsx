@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, FolderKanban, MessageSquareQuote, Settings, LogOut } from 'lucide-react';
 import ProjectsManager from '../components/admin/ProjectsManager';

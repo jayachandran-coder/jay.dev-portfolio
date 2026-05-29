@@ -1,7 +1,9 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PortfolioLayout from './pages/PortfolioLayout';
-import AdminLogin from './pages/AdminLogin';
-import AdminDashboard from './pages/AdminDashboard';
+
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
 function App() {
   return (
@@ -12,11 +14,17 @@ function App() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-900/40 blur-[120px]" />
       </div>
       
-      <Routes>
-        <Route path="/" element={<PortfolioLayout />} />
-        <Route path="/login" element={<AdminLogin />} />
-        <Route path="/admin/*" element={<AdminDashboard />} />
-      </Routes>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-950">
+          <div className="w-12 h-12 border-4 border-brand-500/20 border-t-brand-500 rounded-full animate-spin"></div>
+        </div>
+      }>
+        <Routes>
+          <Route path="/" element={<PortfolioLayout />} />
+          <Route path="/login" element={<AdminLogin />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }

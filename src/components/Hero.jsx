@@ -6,11 +6,11 @@ import { Code2, Braces, Terminal, LayoutTemplate, Fingerprint, ArrowRight, Downl
 // Then, replace 'Icon' with 'imgSrc: "/your-logo.png"'. Example:
 // { imgSrc: "/my-custom-logo.png", startX: -200, startY: -200 }
 const icons = [
-  { imgSrc: "/react.png", startX: -200, startY: -200 },
-  { imgSrc: "/js.png", startX: 200, startY: -200 },
-  { imgSrc: "/node-js.png", startX: 200, startY: 200 },
-  { imgSrc: "/git.png", startX: -200, startY: 200 },
-  { imgSrc: "/mongodb.png", startX: 0, startY: -250 }
+  { name: "React", imgSrc: "/react.png", startX: -200, startY: -200 },
+  { name: "JavaScript", imgSrc: "/js.png", startX: 200, startY: -200 },
+  { name: "Node.js", imgSrc: "/node-js.png", startX: 200, startY: 200 },
+  { name: "Git", imgSrc: "/git.png", startX: -200, startY: 200 },
+  { name: "MongoDB", imgSrc: "/mongodb.png", startX: 0, startY: -250 }
 ];
 
 export default function Hero() {
@@ -40,9 +40,10 @@ export default function Hero() {
             <div className="absolute inset-0 rounded-full bg-brand-500/20 blur-2xl animate-pulse" />
             <div className="relative w-full h-full rounded-full border-4 border-white/10 p-2 glass-panel overflow-hidden">
               <img 
-                src="/profile.png" 
+                src="/profile.webp" 
                 alt="Developer Profile"
                 className="w-full h-full object-cover rounded-full"
+                decoding="async"
               />
             </div>
           </motion.div>
@@ -84,8 +85,9 @@ export default function Hero() {
                       {item.imgSrc ? (
                         <img 
                           src={item.imgSrc} 
-                          alt="orbit logo" 
+                          alt={`${item.name} logo`} 
                           className="w-7 h-7 object-contain drop-shadow-lg" 
+                          decoding="async"
                         />
                       ) : (
                         item.Icon && <item.Icon size={24} color={item.color} className="drop-shadow-lg" />

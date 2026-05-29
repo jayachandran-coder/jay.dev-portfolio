@@ -51,7 +51,7 @@ export default function Reviews() {
       setSubmitMessage('Thank you! Your review has been submitted and is pending approval.');
       setFormData({ name: '', text: '', rating: 5, image: null });
       setTimeout(() => setIsModalOpen(false), 2000);
-    } catch (err) {
+    } catch {
       setSubmitMessage('Oops! Something went wrong submitting your review.');
     } finally {
       setIsSubmitting(false);

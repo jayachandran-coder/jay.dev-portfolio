@@ -14,7 +14,7 @@ export default function AdminLogin() {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { username, password });
       localStorage.setItem('adminToken', res.data.token);
       navigate('/admin');
-    } catch (err) {
+    } catch {
       setError('Invalid username or password');
     }
   };

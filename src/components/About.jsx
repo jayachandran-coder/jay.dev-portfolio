@@ -29,9 +29,11 @@ export default function About() {
             <div className="relative glass-panel rounded-3xl p-2 border border-white/10 overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-500">
               {/* Note: In a real app you might use a different image for the about section */}
               <img 
-                src="/about.png" 
+                src="/about.webp" 
                 alt="About Developer" 
                 className="w-full h-auto aspect-[4/5] object-cover rounded-2xl"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent rounded-2xl flex items-end p-6">
                 <div className="glass-panel w-full p-5 rounded-xl border border-white/10 bg-black/60 backdrop-blur-md">

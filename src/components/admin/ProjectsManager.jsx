@@ -5,7 +5,7 @@ import { Pencil, Trash2, Plus } from 'lucide-react';
 export default function ProjectsManager() {
   const [projects, setProjects] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ title: '', desc: '', img: '', tags: '', live: '', imageFile: null });
+  const [formData, setFormData] = useState({ title: '', desc: '', img: '', imgs: [], tags: '', live: '', imageFiles: [] });
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,14 +21,17 @@ export default function ProjectsManager() {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects`);
       setProjects(res.data);
-    } catch (err) { console.error('Failed to fetch projects'); }
+    } catch { console.error('Failed to fetch projects'); }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     
-    if (!editingId && !formData.imageFile) {
-      setMessage('An image file is required for new projects.');
+    const hasFiles = formData.imageFiles && formData.imageFiles.length > 0;
+    const hasExisting = formData.imgs && formData.imgs.length > 0;
+
+    if (!editingId && !hasFiles) {
+      setMessage('At least one image file is required for new projects.');
       return;
     }
 
@@ -43,11 +46,15 @@ export default function ProjectsManager() {
     uploadData.append('desc', formData.desc);
     uploadData.append('live', formData.live);
     parsedTags.forEach(tag => uploadData.append('tags', tag));
-    if (formData.imageFile) {
-      uploadData.append('image', formData.imageFile);
-    } else if (editingId && formData.img) {
-      // No new file chosen — re-send the existing Cloudinary URL so backend doesn't clear it
-      uploadData.append('existingImg', formData.img);
+
+    if (hasFiles) {
+      // Append multiple files for upload
+      formData.imageFiles.forEach(file => {
+        uploadData.append('images', file);
+      });
+    } else if (editingId && hasExisting) {
+      // Send the current list of images to retain
+      uploadData.append('existingImgs', JSON.stringify(formData.imgs));
     }
 
     try {
@@ -61,7 +68,7 @@ export default function ProjectsManager() {
       
       setTimeout(() => setMessage(''), 3000);
       setIsEditing(false);
-      setFormData({ title: '', desc: '', img: '', tags: '', live: '', imageFile: null });
+      setFormData({ title: '', desc: '', img: '', imgs: [], tags: '', live: '', imageFiles: [] });
       setEditingId(null);
       fetchProjects();
     } catch (err) { 
@@ -73,7 +80,12 @@ export default function ProjectsManager() {
   };
 
   const startEdit = (project) => {
-    setFormData({ ...project, tags: Array.isArray(project.tags) ? project.tags.join(', ') : '', imageFile: null });
+    setFormData({ 
+      ...project, 
+      imgs: Array.isArray(project.imgs) ? project.imgs : (project.img ? [project.img] : []),
+      tags: Array.isArray(project.tags) ? project.tags.join(', ') : '', 
+      imageFiles: [] 
+    });
     setEditingId(project._id);
     setIsEditing(true);
   };
@@ -85,7 +97,7 @@ export default function ProjectsManager() {
         setMessage('Project deleted.');
         setTimeout(() => setMessage(''), 3000);
         fetchProjects();
-      } catch (err) { 
+      } catch { 
         setMessage('Error deleting project.');
         setTimeout(() => setMessage(''), 3000);
       }
@@ -114,11 +126,53 @@ export default function ProjectsManager() {
             <textarea className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white h-32 focus:border-brand-500 outline-none transition-colors" placeholder="Describe the project..." value={formData.desc} onChange={e => setFormData({...formData, desc: e.target.value})} required />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-400">Project Image {editingId && '(Leave blank to keep current)'}</label>
-            <input type="file" accept="image/*" onChange={e => setFormData({...formData, imageFile: e.target.files[0]})} className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-500/20 file:text-brand-300 hover:file:bg-brand-500/30 cursor-pointer" />
-            {formData.imageFile && (
-               <p className="text-xs text-brand-400 mt-1">Selected: {formData.imageFile.name}</p>
+          <div className="space-y-3">
+            <label className="text-sm font-semibold text-slate-400">Project Images {editingId && '(Uploading new files will replace current ones)'}</label>
+            <input 
+              type="file" 
+              multiple 
+              accept="image/*" 
+              onChange={e => setFormData({...formData, imageFiles: Array.from(e.target.files)})} 
+              className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-500/20 file:text-brand-300 hover:file:bg-brand-500/30 cursor-pointer" 
+            />
+            
+            {/* New files preview */}
+            {formData.imageFiles && formData.imageFiles.length > 0 && (
+              <div className="space-y-1">
+                <p className="text-xs text-brand-400 font-semibold">Selected Files ({formData.imageFiles.length}):</p>
+                <div className="flex flex-wrap gap-2">
+                  {formData.imageFiles.map((file, idx) => (
+                    <div key={idx} className="relative w-16 h-16 bg-slate-800 rounded-lg overflow-hidden border border-brand-500/50 flex items-center justify-center p-1">
+                      <img src={URL.createObjectURL(file)} alt="new preview" className="w-full h-full object-contain rounded" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Existing files preview with deletion */}
+            {editingId && formData.imgs && formData.imgs.length > 0 && (!formData.imageFiles || formData.imageFiles.length === 0) && (
+              <div className="space-y-1">
+                <p className="text-xs text-slate-400 font-semibold">Current Images ({formData.imgs.length}):</p>
+                <div className="flex flex-wrap gap-2">
+                  {formData.imgs.map((url, idx) => (
+                    <div key={idx} className="relative w-16 h-16 bg-slate-800 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center p-1 group/img">
+                      <img src={url} alt="existing preview" className="w-full h-full object-contain rounded" />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const remaining = formData.imgs.filter((_, i) => i !== idx);
+                          setFormData({ ...formData, imgs: remaining });
+                        }}
+                        className="absolute -top-1.5 -right-1.5 bg-red-600 hover:bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md opacity-0 group-hover/img:opacity-100 transition-opacity"
+                        title="Remove Image"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
 
@@ -156,7 +210,7 @@ export default function ProjectsManager() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold text-white">Projects</h2>
-        <button onClick={() => { setIsEditing(true); setEditingId(null); setFormData({ title: '', desc: '', img: '', tags: '', live: '', imageFile: null }); }} className="bg-brand-500 hover:bg-brand-600 text-white flex items-center gap-2 px-4 py-2 rounded-xl">
+        <button onClick={() => { setIsEditing(true); setEditingId(null); setFormData({ title: '', desc: '', img: '', imgs: [], tags: '', live: '', imageFiles: [] }); }} className="bg-brand-500 hover:bg-brand-600 text-white flex items-center gap-2 px-4 py-2 rounded-xl">
           <Plus size={20} /> Add Project
         </button>
       </div>
@@ -170,7 +224,14 @@ export default function ProjectsManager() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map(proj => (
           <div key={proj._id} className="glass-panel p-6 rounded-3xl border border-white/10 flex flex-col">
-            <img src={proj.img} alt={proj.title} className="w-full h-40 object-cover rounded-xl mb-4 bg-slate-900" />
+            <div className="w-full aspect-video overflow-hidden bg-slate-900/50 flex items-center justify-center rounded-2xl mb-4 relative">
+              <img src={proj.img} alt={proj.title} className="w-full h-full object-cover" />
+              {proj.imgs && proj.imgs.length > 1 && (
+                <span className="absolute bottom-2 right-2 bg-slate-900/80 text-white text-xs font-semibold px-2 py-1 rounded-md backdrop-blur-sm border border-white/10">
+                  {proj.imgs.length} Images
+                </span>
+              )}
+            </div>
             <h3 className="text-xl font-bold text-white mb-2">{proj.title}</h3>
             <p className="text-slate-400 text-sm mb-4 line-clamp-2">{proj.desc}</p>
             <div className="flex gap-2 mt-auto pt-4 border-t border-white/10">
